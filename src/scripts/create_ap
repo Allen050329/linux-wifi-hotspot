@@ -327,6 +327,7 @@ can_transmit_to_channel() {
             CHANNEL_INFO=$(get_adapter_info ${IFACE} | grep " \(49[0-9][0-9]\|5[0-9]\{3\}\) MHz \[${CHANNEL_NUM}\]")
         fi
         [[ -z "${CHANNEL_INFO}" ]] && return 1
+        [[ "${CHANNEL_INFO}" == *no\ IR* ]] && return 1
         [[ "${CHANNEL_INFO}" == *disabled* ]] && return 1
         return 0
     else
@@ -1733,23 +1734,12 @@ rsn_pairwise=CCMP
 EOF
 fi
 
-echo "----------------------------"
-cat $CONFDIR/hostapd.conf
-echo "----------------------------"
 for l in $(cat $CONFDIR/hostapd-temp.conf); do
     SEGL=(${l//=/ })
     REPLACE=${SEGL[1]}
-    echo "+++++++++++++++++++++++"
-    echo $SEGL
-    echo $REPLACE
-    echo "+++++++++++++++++++++++"
     awk -F '=' 'BEGIN { OFS=FS } $1 ~ /${SEGL[0]}/ { gsub( /$2/,$REPLACE) }; 1' $CONFDIR/hostapd.conf > /dev/null
 done
-echo "+--------------------------+"
-cat $CONFDIR/hostapd-temp.conf
-echo "----------------------------"
-cat $CONFDIR/hostapd.conf
-echo "----------------------------"
+
 
 if [[ "$SHARE_METHOD" == "bridge" ]]; then
     echo "bridge=${BRIDGE_IFACE}" >> $CONFDIR/hostapd-temp.conf
