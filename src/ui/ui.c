@@ -306,19 +306,19 @@ static void* entry_channel_warn(GtkWidget *widget, gpointer data){
 
 
         if (configValues.freq == NULL) {
-            if (!(li <= 196 && li > 0)) {
+            if (!(li <= 196 && li >= 0)) {
                 gtk_style_context_add_class(context_entry_channel, "entry-error");
                 set_error_text(ERROR_CHANNEL_MSG);
                 return FALSE;
             }
         } else if (strcmp(configValues.freq, "2.4") == 0) {
-            if (!(li <= 11 && li > 0)) {
+            if (!(li <= 11 && li >= 0)) {
                 gtk_style_context_add_class(context_entry_channel, "entry-error");
                 set_error_text(ERROR_CHANNEL_MSG_2);
                 return FALSE;
             }
         } else if (strcmp(configValues.freq, "5") == 0) {
-            if (!(li <= 196 && li > 0)) {
+            if (!(li <= 196 && li >= 0)) {
                 gtk_style_context_add_class(context_entry_channel, "entry-error");
                 set_error_text(ERROR_CHANNEL_MSG_5);
                 return FALSE;
@@ -383,10 +383,9 @@ static void *update_freq_toggle(){
         configValues.freq = "2.4";
 
     else if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rb_freq_5)))
-        configValues.freq ="5";
+        configValues.freq = "5";
     else
-        configValues.freq =NULL;
-
+        configValues.freq = "0";
     return NULL;
 }
 
@@ -838,14 +837,14 @@ static gboolean validator(ConfigValues *cv){
 
 
         if(cv->freq==NULL){
-            if(!(li<=196 && li>0))
+            if(!(li<=196 && li>=0))
                 return FALSE;
         }
         else if(strcmp(cv->freq,"2.4")==0){
-            if(!(li<=11 && li>0))
+            if(!(li<=11 && li>=0))
                 return FALSE;
         } else if(strcmp(cv->freq,"5")==0){
-            if(!(li<=196 && li>0))
+            if(!(li<=196 && li>=0))
                 return FALSE;
         }
 
@@ -892,9 +891,9 @@ static int init_config_val_input(ConfigValues* cv){
             cv->freq = "2.4";
 
         else if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rb_freq_5)))
-            cv->freq ="5";
+            cv->freq = "5";
         else
-            cv->freq =NULL;
+            cv->freq = "0";
 
         if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(cb_channel)))
             cv->channel = (char*)gtk_entry_get_text(entry_channel);
